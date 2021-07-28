@@ -21,7 +21,7 @@ public class WowChatClient {
     private static Logger logger = LoggerFactory.getLogger(WowChatClient.class);
 
     private int PORT = 6000;
-    private String HOST = "localhost";
+    private static String HOST = "localhost";
 
     private ClientConnected clientConnected;
 
@@ -43,7 +43,7 @@ public class WowChatClient {
                 chat.createGroup(chatGroupName);
             });
 
-            client.start();
+            client.start(HOST);
             listenForInput(client);
         }finally {
             client.stop();
@@ -51,7 +51,7 @@ public class WowChatClient {
 
     }
 
-    public void start() throws Exception {
+    public void start(String host) throws Exception {
         workerGroup = new NioEventLoopGroup();
 
         Bootstrap bootstrap = new Bootstrap();
@@ -72,7 +72,7 @@ public class WowChatClient {
             }
         });
 
-        ChannelFuture future = bootstrap.connect(HOST, PORT).sync();
+        ChannelFuture future = bootstrap.connect(host, PORT).sync();
         future.addListener((ChannelFutureListener) channelFuture -> {
             logger.info("Connected to server");
             this.chat = inboundHandler.getChatHandler();

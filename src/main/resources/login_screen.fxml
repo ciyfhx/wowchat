@@ -10,12 +10,14 @@
       <RowConstraints minHeight="30.0" prefHeight="70.0" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" />
    </rowConstraints>
    <columnConstraints>
+      <ColumnConstraints minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
       <ColumnConstraints minWidth="10.0" percentWidth="100.0" prefWidth="100.0" />
    </columnConstraints>
    <children>
-      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" GridPane.hgrow="ALWAYS">
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS">
          <children>
             <Label alignment="CENTER" prefHeight="70.0" prefWidth="300.0" text="WowChat" textAlignment="CENTER" textFill="RED">
                <font>
@@ -23,19 +25,29 @@
                </font></Label>
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+      <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
          <children>
-            <Label text="Username:">
+            <Label text="Host:">
                <HBox.margin>
                   <Insets right="5.0" />
                </HBox.margin></Label>
-            <TextField fx:id="usernameTextField" />
          </children>
          <GridPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </GridPane.margin>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+      <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+         <children>
+            <Label text="Username:">
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin></Label>
+         </children>
+         <GridPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </GridPane.margin>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
          <children>
             <Button defaultButton="true" mnemonicParsing="false" onAction="#connectToServer" text="Connect" />
          </children>
@@ -43,6 +55,16 @@
             <Insets top="15.0" />
          </padding>
       </HBox>
+      <TextField fx:id="hostTextField" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets right="15.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="usernameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets right="15.0" />
+         </GridPane.margin>
+      </TextField>
 
 
 

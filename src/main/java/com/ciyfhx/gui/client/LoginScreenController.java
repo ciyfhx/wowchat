@@ -24,6 +24,10 @@ public class LoginScreenController implements Initializable {
     private TextField usernameTextField;
 
     @FXML
+    private TextField hostTextField;
+
+
+    @FXML
     public void connectToServer(ActionEvent event) throws IOException {
 
         chat.sendUserInfo(usernameTextField.getText());
@@ -39,7 +43,7 @@ public class LoginScreenController implements Initializable {
             var client = new WowChatClient();
             client.setClientConnected(chat -> this.chat = chat);
             this.connection.setClient(client);
-            this.connection.getClient().start();
+            this.connection.getClient().start(hostTextField.getText());
         } catch (Exception e) {
             e.printStackTrace();
         }
