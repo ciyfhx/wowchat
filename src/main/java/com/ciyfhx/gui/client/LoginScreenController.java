@@ -4,6 +4,7 @@ import com.ciyfhx.chat.IChat;
 import com.ciyfhx.gui.FXMLUtils;
 import com.ciyfhx.main.WowChatClient;
 import com.google.inject.Inject;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,19 +35,26 @@ public class LoginScreenController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            var client = new WowChatClient();
-            client.setClientConnected(chat -> {
-                this.chat = chat;
-                this.chat.sendUserInfo(usernameTextField.getText());
+        var client = new WowChatClient();
+        client.setClientConnected(chat -> {
+            this.chat = chat;
+            this.chat.sendUserInfo(usernameTextField.getText());
 
+            showChatGroupsScreen();
+        });
+        this.connection.setClient(client);
+    }
+
+    private void showChatGroupsScreen() {
+        Platform.runLater(() -> {
+            try {
                 FXMLUtils.newStage("list_chat_groups_screen.fxml");
                 Stage stage = (Stage) usernameTextField.getScene().getWindow();
                 stage.close();
-            });
-            this.connection.setClient(client);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        });
     }
 }
