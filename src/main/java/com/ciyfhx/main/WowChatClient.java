@@ -10,12 +10,13 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class WowChatClient {
 
     public interface ClientConnected {
-        void connected(IChat chat);
+        void connected(IChat chat) throws IOException;
     }
 
     private static Logger logger = LoggerFactory.getLogger(WowChatClient.class);
@@ -51,7 +52,7 @@ public class WowChatClient {
 
     }
 
-    public void start(String host) throws Exception {
+    public ChannelFuture start(String host) throws Exception {
         workerGroup = new NioEventLoopGroup();
 
         Bootstrap bootstrap = new Bootstrap();
@@ -78,11 +79,7 @@ public class WowChatClient {
             this.chat = inboundHandler.getChatHandler();
             if(clientConnected!=null)clientConnected.connected(this.chat);
         });
-
-
-//            future.channel().closeFuture().sync();
-
-
+        return future;
     }
 
     public void stop() {

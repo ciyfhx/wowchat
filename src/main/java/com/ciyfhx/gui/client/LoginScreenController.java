@@ -28,22 +28,23 @@ public class LoginScreenController implements Initializable {
 
 
     @FXML
-    public void connectToServer(ActionEvent event) throws IOException {
-
-        chat.sendUserInfo(usernameTextField.getText());
-
-        FXMLUtils.newStage("list_chat_groups_screen.fxml");
-        Stage stage = (Stage) usernameTextField.getScene().getWindow();
-        stage.close();
+    public void connectToServer(ActionEvent event) throws Exception {
+        this.connection.getClient().start(hostTextField.getText());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             var client = new WowChatClient();
-            client.setClientConnected(chat -> this.chat = chat);
+            client.setClientConnected(chat -> {
+                this.chat = chat;
+                this.chat.sendUserInfo(usernameTextField.getText());
+
+                FXMLUtils.newStage("list_chat_groups_screen.fxml");
+                Stage stage = (Stage) usernameTextField.getScene().getWindow();
+                stage.close();
+            });
             this.connection.setClient(client);
-            this.connection.getClient().start(hostTextField.getText());
         } catch (Exception e) {
             e.printStackTrace();
         }
