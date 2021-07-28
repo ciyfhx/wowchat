@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ciyfhx.gui.client.ListChatGroupsController">
+   <center>
+      <TreeTableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TreeTableColumn fx:id="chatGroupColumn" prefWidth="75.0" text="Chat Group" />
+          <TreeTableColumn prefWidth="75.0" text="Users" />
+        </columns>
+      </TreeTableView>
+   </center>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="New">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#createChatGroupAction" text="New Chat Group" />
+               </items></Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

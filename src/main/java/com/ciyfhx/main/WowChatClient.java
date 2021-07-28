@@ -1,0 +1,126 @@
+package com.ciyfhx.main;
+
+import com.ciyfhx.chat.IChat;
+import com.ciyfhx.network.ClientOutboundMessageProcessingHandler;
+import com.ciyfhx.network.PacketDecoder;
+import com.ciyfhx.network.PacketEncoder;
+import com.ciyfhx.network.ClientInboundMessageProcessingHandler;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+
+import java.util.Scanner;
+
+public class WowChatClient {
+
+    public interface ClientConnected {
+        void connected(IChat chat);
+    }
+
+    private int PORT = 6000;
+    private String HOST = "localhost";
+
+    private ClientConnected clientConnected;
+
+    private ClientInboundMessageProcessingHandler inboundHandler;
+    private ClientOutboundMessageProcessingHandler outboundHandler;
+    private IChat chat;
+
+    private EventLoopGroup workerGroup;
+
+
+    public static void main(String[] args) throws Exception {
+        String username = askForUsername();
+        String chatGroupName = askForChatGroupName();
+        var client = new WowChatClient();
+
+        try{
+            client.setClientConnected(chat -> {
+                chat.sendUserInfo(username);
+                chat.createGroup(chatGroupName);
+            });
+
+            client.start();
+            listenForInput(client);
+        }finally {
+            client.stop();
+        }
+
+    }
+
+    public void start() throws Exception {
+        workerGroup = new NioEventLoopGroup();
+
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(workerGroup);
+        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+        this.inboundHandler = new ClientInboundMessageProcessingHandler();
+        this.outboundHandler = new ClientOutboundMessageProcessingHandler();
+        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            protected void initChannel(SocketChannel socketChannel) throws Exception {
+                socketChannel.pipeline().addLast(
+                        new PacketEncoder(),
+                        outboundHandler,
+                        new PacketDecoder(),
+                        inboundHandler
+                );
+            }
+        });
+
+        ChannelFuture future = bootstrap.connect(HOST, PORT).sync();
+        future.addListener((ChannelFutureListener) channelFuture -> {
+            System.out.println("Connected to server");
+            this.chat = inboundHandler.getChatHandler();
+            if(clientConnected!=null)clientConnected.connected(this.chat);
+        });
+
+
+//            future.channel().closeFuture().sync();
+
+
+    }
+
+    public void stop() {
+        workerGroup.shutdownGracefully();
+        System.out.println("Disconnected from server");
+    }
+
+    public void setClientConnected(ClientConnected clientConnected) {
+        this.clientConnected = clientConnected;
+    }
+
+    public IChat getChat() {
+        return chat;
+    }
+
+    public static void listenForInput(WowChatClient client) {
+        var scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Please type your message:");
+            if (scanner.hasNext()) {
+                String messageToSend = scanner.nextLine();
+                if (messageToSend.equals("exit")) break;
+                client.chat.sendMessage(messageToSend);
+            }
+        }
+    }
+
+    public static String askForUsername() {
+        var scanner = new Scanner(System.in);
+        System.out.println("Username:");
+        String username = scanner.nextLine();
+        return username;
+    }
+
+    public static String askForChatGroupName() {
+        var scanner = new Scanner(System.in);
+        System.out.println("Chat Group Name:");
+        String chatGroupName = scanner.nextLine();
+        return chatGroupName;
+    }
+
+}
