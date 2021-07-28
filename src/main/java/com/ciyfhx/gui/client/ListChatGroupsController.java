@@ -19,14 +19,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class ListChatGroupsController implements Initializable, IListChatGroups {
 
     @Inject
-    private WowChatConnection connection;
+    private WowChatClientConnection connection;
     private IChat chat;
 
     @FXML

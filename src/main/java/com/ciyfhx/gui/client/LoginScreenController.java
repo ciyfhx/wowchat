@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 public class LoginScreenController implements Initializable {
 
     @Inject
-    private WowChatConnection connection;
+    private WowChatClientConnection connection;
     private IChat chat;
 
     @FXML
@@ -25,7 +25,6 @@ public class LoginScreenController implements Initializable {
 
     @FXML
     public void connectToServer(ActionEvent event) throws IOException {
-        System.out.println(usernameTextField.getText());
 
         chat.sendUserInfo(usernameTextField.getText());
 

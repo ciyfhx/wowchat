@@ -9,7 +9,9 @@ module com.ciyfhx.wowchat {
     requires com.google.guice;
 
     requires netty.all;
+    requires org.slf4j;
 
     opens com.ciyfhx.chat;
     opens com.ciyfhx.gui.client;
+    opens com.ciyfhx.gui.server;
 }

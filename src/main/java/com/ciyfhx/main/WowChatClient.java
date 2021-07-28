@@ -1,15 +1,14 @@
 package com.ciyfhx.main;
 
 import com.ciyfhx.chat.IChat;
-import com.ciyfhx.network.ClientOutboundMessageProcessingHandler;
-import com.ciyfhx.network.PacketDecoder;
-import com.ciyfhx.network.PacketEncoder;
-import com.ciyfhx.network.ClientInboundMessageProcessingHandler;
+import com.ciyfhx.network.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Scanner;
 
@@ -18,6 +17,8 @@ public class WowChatClient {
     public interface ClientConnected {
         void connected(IChat chat);
     }
+
+    private static Logger logger = LoggerFactory.getLogger(WowChatClient.class);
 
     private int PORT = 6000;
     private String HOST = "localhost";
@@ -73,7 +74,7 @@ public class WowChatClient {
 
         ChannelFuture future = bootstrap.connect(HOST, PORT).sync();
         future.addListener((ChannelFutureListener) channelFuture -> {
-            System.out.println("Connected to server");
+            logger.info("Connected to server");
             this.chat = inboundHandler.getChatHandler();
             if(clientConnected!=null)clientConnected.connected(this.chat);
         });
@@ -86,7 +87,7 @@ public class WowChatClient {
 
     public void stop() {
         workerGroup.shutdownGracefully();
-        System.out.println("Disconnected from server");
+        logger.info("Disconnected from server");
     }
 
     public void setClientConnected(ClientConnected clientConnected) {

@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 public class ChatScreenController implements Initializable, IMessageReceived {
 
     @Inject
-    private WowChatConnection connection;
+    private WowChatClientConnection connection;
     private IChat chat;
 
     @FXML

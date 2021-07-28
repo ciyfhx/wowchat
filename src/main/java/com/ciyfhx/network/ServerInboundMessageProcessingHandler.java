@@ -7,12 +7,15 @@ import com.ciyfhx.chat.packets.*;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
 @ChannelHandler.Sharable
 public class ServerInboundMessageProcessingHandler extends ChannelInboundHandlerAdapter {
 
+    private static Logger logger = LoggerFactory.getLogger(ServerInboundMessageProcessingHandler.class);
     private ChatManager chatManager;
 
     public ServerInboundMessageProcessingHandler(){
@@ -36,13 +39,13 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
 
         if(packet instanceof NewUserPacket userPacket){
             chatManager.createUser(userPacket.getUsername(), ctx.channel());
-            System.out.println("New User from " + userPacket.getUsername() + "[" + ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().toString() +"]");
+            logger.info("New User from " + userPacket.getUsername() + "[" + ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().toString() +"]");
         } else if(packet instanceof SendMessagePacket messagePacket){
-            System.out.println("[" + messagePacket.getSender().username() + "]: " + messagePacket.getMessage());
+            logger.info("[" + messagePacket.getSender().username() + "]: " + messagePacket.getMessage());
             ServerChatGroup serverChatGroup = chatManager.getChatGroupFromId(messagePacket.getChatGroupId());
             serverChatGroup.sendMessageInGroup(messagePacket.getSender(), messagePacket.getMessage());
         }else if (packet instanceof NewChatGroupPacket chatGroupPacket) {
-            System.out.println("New chat group: " + chatGroupPacket.getChatGroupName());
+            logger.info("New chat group: " + chatGroupPacket.getChatGroupName());
             var chatGroup = chatManager.createChatGroup(chatGroupPacket.getChatGroupName());
             chatGroup.joinChatGroup(user);
 
@@ -52,7 +55,7 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
 
         }else if(packet instanceof JoinChatGroupPacket joinChatGroupPacket){
             var chatGroup = chatManager.getChatGroupFromId(joinChatGroupPacket.getChatGroupIdToJoin());
-            System.out.println(user.username() + " joined chat group: " + chatGroup.getChatGroupName());
+            logger.info(user.username() + " joined chat group: " + chatGroup.getChatGroupName());
             chatGroup.joinChatGroup(user);
 
             // Send Chat Group id
@@ -82,7 +85,7 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
         // Remove user if there is an exception
         try {
             User user = chatManager.getUserFromChannel(ctx.channel());
-            System.out.println("User removed " + user.username() + "[" + ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().toString() +"]");
+            logger.error("User removed " + user.username() + "[" + ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().toString() +"]");
             chatManager.removeUser(user);
         }finally {
             ctx.close();

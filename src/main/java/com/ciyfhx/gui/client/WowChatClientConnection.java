@@ -2,7 +2,7 @@ package com.ciyfhx.gui.client;
 
 import com.ciyfhx.main.WowChatClient;
 
-public class WowChatConnection  {
+public class WowChatClientConnection {
 
     private WowChatClient client;
 

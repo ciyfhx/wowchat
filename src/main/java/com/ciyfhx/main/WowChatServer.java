@@ -1,8 +1,8 @@
 package com.ciyfhx.main;
 
+import com.ciyfhx.network.PacketDecoder;
 import com.ciyfhx.network.PacketEncoder;
 import com.ciyfhx.network.ServerInboundMessageProcessingHandler;
-import com.ciyfhx.network.PacketDecoder;
 import com.ciyfhx.network.ServerOutboundMessageProcessingHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -19,41 +19,46 @@ public class WowChatServer {
     private ServerInboundMessageProcessingHandler inboundHandler;
     private ServerOutboundMessageProcessingHandler outboundHandler;
 
+    private EventLoopGroup bossGroup, workerGroup;
+
     public static void main(String[] args) throws Exception {
-        new WowChatServer().run();
-    }
-
-    public void run() throws Exception{
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-
-        try {
-            var serverBootstrap = new ServerBootstrap();
-            this.inboundHandler = new ServerInboundMessageProcessingHandler();
-            this.outboundHandler = new ServerOutboundMessageProcessingHandler();
-            serverBootstrap.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(
-                                    new PacketEncoder(),
-                                    outboundHandler,
-                                    new PacketDecoder(),
-                                    inboundHandler
-                                    );
-                        }
-                    }).option(ChannelOption.SO_BACKLOG, 128)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
-
-            ChannelFuture future = serverBootstrap.bind(PORT).sync();
-            future.channel().closeFuture().sync();
-
+        var server = new WowChatServer();
+        try{
+            server.start().sync();
         }finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+            server.stop();
         }
-
     }
+
+    public ChannelFuture start() throws Exception{
+        this.bossGroup = new NioEventLoopGroup();
+        this.workerGroup = new NioEventLoopGroup();
+
+        var serverBootstrap = new ServerBootstrap();
+        this.inboundHandler = new ServerInboundMessageProcessingHandler();
+        this.outboundHandler = new ServerOutboundMessageProcessingHandler();
+        serverBootstrap.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        socketChannel.pipeline().addLast(
+                                new PacketEncoder(),
+                                outboundHandler,
+                                new PacketDecoder(),
+                                inboundHandler
+                        );
+                    }
+                }).option(ChannelOption.SO_BACKLOG, 128)
+                .childOption(ChannelOption.SO_KEEPALIVE, true);
+
+        return serverBootstrap.bind(PORT).sync().channel().closeFuture();
+    }
+
+    public void stop(){
+        workerGroup.shutdownGracefully();
+        bossGroup.shutdownGracefully();
+    }
+
 
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class MainClientGUI extends Application {
 
-    public final static Injector INJECTOR = Guice.createInjector(new WowChatModule());
+    public final static Injector INJECTOR = Guice.createInjector(new WowChatClientModule());
 
     public static void main(String[] args) {
         launch(args);
