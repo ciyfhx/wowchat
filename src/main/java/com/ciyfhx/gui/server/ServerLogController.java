@@ -9,16 +9,26 @@ import javafx.scene.control.TextArea;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ServerLogController implements Initializable {
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ServerLogController extends AppenderBase<ILoggingEvent> implements Initializable {
     @Inject
     private WowChatServerConnection connection;
 
     @FXML
     private TextArea serverLogTextArea;
 
+    private Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        rootLogger.addAppender(this);
+        this.start();
+
         var server = new WowChatServer();
         this.connection.setServer(server);
         try {
@@ -26,5 +36,10 @@ public class ServerLogController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void append(ILoggingEvent event) {
+        serverLogTextArea.appendText(event.getMessage() + "\n");
     }
 }

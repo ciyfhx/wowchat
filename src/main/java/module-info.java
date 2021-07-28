@@ -10,6 +10,8 @@ module com.ciyfhx.wowchat {
 
     requires netty.all;
     requires org.slf4j;
+    requires logback.core;
+    requires logback.classic;
 
     opens com.ciyfhx.chat;
     opens com.ciyfhx.gui.client;
