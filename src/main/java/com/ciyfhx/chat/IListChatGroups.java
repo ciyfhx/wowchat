@@ -4,6 +4,6 @@ import java.util.Collection;
 
 public interface IListChatGroups {
 
-    void onListChatGroups(Collection<? extends BasicChatGroup> chatGroups);
+    void onListChatGroups(Collection<? extends ChatGroup> chatGroups);
 
 }

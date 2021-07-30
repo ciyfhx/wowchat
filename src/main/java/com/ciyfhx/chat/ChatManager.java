@@ -53,7 +53,7 @@ public class ChatManager {
         return userChannels.get(channel);
     }
 
-    public Collection<? extends BasicChatGroup> getAvailableChatGroups() {
+    public Collection<? extends ChatGroup> getAvailableChatGroups() {
         return this.chatGroups.values();
     }
 

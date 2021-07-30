@@ -2,22 +2,17 @@ package com.ciyfhx.chat;
 
 import java.util.UUID;
 
-public class BasicChatGroup {
+public class BasicChatGroup extends ChatGroup{
 
-    private final String chatGroupName;
-    private final UUID chatGroupId;
+    private int numberOfUsersInChatGroup = 0;
 
-    public BasicChatGroup(UUID chatGroupId, String chatGroupName) {
-        this.chatGroupId = chatGroupId;
-        this.chatGroupName = chatGroupName;
+    public BasicChatGroup(UUID chatGroupId, String chatGroupName, int sizeOfChatGroup, int numberOfUsersInChatGroup) {
+        super(chatGroupId, chatGroupName, sizeOfChatGroup);
+        this.numberOfUsersInChatGroup = numberOfUsersInChatGroup;
     }
 
-    public UUID getChatGroupId() {
-        return chatGroupId;
+    @Override
+    public int getNumberOfUsersInChatGroup() {
+        return numberOfUsersInChatGroup;
     }
-
-    public String getChatGroupName() {
-        return chatGroupName;
-    }
-
 }

@@ -8,7 +8,7 @@
       <TreeTableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
           <TreeTableColumn fx:id="chatGroupColumn" prefWidth="75.0" text="Chat Group" />
-          <TreeTableColumn prefWidth="75.0" text="Users" />
+          <TreeTableColumn fx:id="usersColumn" prefWidth="75.0" text="Users" />
         </columns>
       </TreeTableView>
    </center>

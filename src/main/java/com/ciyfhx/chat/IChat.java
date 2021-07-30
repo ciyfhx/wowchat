@@ -6,8 +6,8 @@ public interface IChat {
 
     void sendUserInfo(String username);
 
-    void setChatGroup(BasicChatGroup chatGroup);
-    BasicChatGroup getChatGroup();
+    void setChatGroup(ChatGroup chatGroup);
+    ChatGroup getChatGroup();
 
     void listChatGroups();
 
@@ -17,8 +17,8 @@ public interface IChat {
 
     ChannelFuture createGroup(String chatGroupName);
 
-    ChannelFuture joinChatGroup(BasicChatGroup chatGroup);
-    ChannelFuture leaveChatGroup(BasicChatGroup chatGroup);
+    ChannelFuture joinChatGroup(ChatGroup chatGroup);
+    ChannelFuture leaveChatGroup(ChatGroup chatGroup);
 
     void sendMessage(String message);
 

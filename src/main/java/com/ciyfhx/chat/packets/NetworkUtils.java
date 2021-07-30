@@ -1,5 +1,7 @@
 package com.ciyfhx.chat.packets;
 
+import com.ciyfhx.chat.BasicChatGroup;
+import com.ciyfhx.chat.ChatGroup;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.StandardCharsets;
@@ -32,5 +34,23 @@ public class NetworkUtils {
         String content = new String(data, StandardCharsets.UTF_8);
         return content;
     }
+
+
+    public static void writeChatGroup(ChatGroup chatGroup, ByteBuf out){
+        NetworkUtils.writeUUID(chatGroup.getChatGroupId(), out);
+        NetworkUtils.writeString(chatGroup.getChatGroupName(), out);
+        out.writeInt(chatGroup.getSizeOfChatGroup());
+        out.writeInt(chatGroup.getNumberOfUsersInChatGroup());
+    }
+
+    public static ChatGroup readChatGroup(ByteBuf in){
+        UUID chatGroupId = NetworkUtils.readUUID(in);
+        String chatGroupName = NetworkUtils.readString(in);
+        int sizeOfChatGroup = in.readInt();
+        int numberOfUsers = in.readInt();
+
+        return new BasicChatGroup(chatGroupId, chatGroupName, sizeOfChatGroup, numberOfUsers);
+    }
+
 
 }

@@ -1,11 +1,13 @@
 package com.ciyfhx.gui.client;
 
-import com.ciyfhx.chat.BasicChatGroup;
+import com.ciyfhx.chat.ChatGroup;
 import com.ciyfhx.chat.IChat;
 import com.ciyfhx.chat.IListChatGroups;
 import com.ciyfhx.gui.FXMLUtils;
 import com.google.inject.Inject;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +17,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,9 +31,11 @@ public class ListChatGroupsController implements Initializable, IListChatGroups 
     private IChat chat;
 
     @FXML
-    private TreeTableView<BasicChatGroup> tableView;
+    private TreeTableView<ChatGroup> tableView;
     @FXML
-    private TreeTableColumn<BasicChatGroup, String> chatGroupColumn;
+    private TreeTableColumn<ChatGroup, String> chatGroupColumn;
+    @FXML
+    private TreeTableColumn<ChatGroup, String> usersColumn;
 
     @FXML
     private void createChatGroupAction(ActionEvent event){
@@ -50,9 +55,14 @@ public class ListChatGroupsController implements Initializable, IListChatGroups 
         this.chat.setListChatGroupsListener(this);
 
         chatGroupColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("chatGroupName"));
+        usersColumn.setCellValueFactory(data -> {
+            var chatGroup = data.getValue().getValue();
+            if(chatGroup == null) return new SimpleStringProperty("");
+            return new SimpleStringProperty(chatGroup.getNumberOfUsersInChatGroup()+ "/" + chatGroup.getSizeOfChatGroup());
+        });
         this.tableView.setOnMouseClicked(event -> {
             if(event.getClickCount() == 2){
-                BasicChatGroup selectedChatGroup = tableView.getSelectionModel().getSelectedItem().getValue();
+                ChatGroup selectedChatGroup = tableView.getSelectionModel().getSelectedItem().getValue();
                 this.chat.joinChatGroup(selectedChatGroup).addListener(future -> this.showChatScreen());
             }
         });
@@ -60,9 +70,9 @@ public class ListChatGroupsController implements Initializable, IListChatGroups 
     }
 
     @Override
-    public void onListChatGroups(Collection<? extends BasicChatGroup> chatGroups) {
-        var root = new TreeItem<BasicChatGroup>();
-        for(BasicChatGroup chatGroup : chatGroups)root.getChildren().add(new TreeItem<>(chatGroup));
+    public void onListChatGroups(Collection<? extends ChatGroup> chatGroups) {
+        var root = new TreeItem<ChatGroup>();
+        for(ChatGroup chatGroup : chatGroups)root.getChildren().add(new TreeItem<>(chatGroup));
         Platform.runLater(() -> {
             tableView.setRoot(root);
             tableView.setShowRoot(false);

@@ -1,6 +1,6 @@
 package com.ciyfhx.network;
 
-import com.ciyfhx.chat.BasicChatGroup;
+import com.ciyfhx.chat.ChatGroup;
 import com.ciyfhx.chat.ClientChatHandler;
 import com.ciyfhx.chat.IChat;
 import com.ciyfhx.chat.packets.JoinedChatGroupPacket;
@@ -39,12 +39,12 @@ public class ClientInboundMessageProcessingHandler extends ChannelInboundHandler
             logger.info("SERVER: " + serverMessagePacket.getMessage());
         }
         else if(packet instanceof JoinedChatGroupPacket joinedChatGroupPacket) {
-            BasicChatGroup chatGroup = joinedChatGroupPacket.getChatGroup();
+            ChatGroup chatGroup = joinedChatGroupPacket.getChatGroup();
             handler.setChatGroup(chatGroup);
         }else if(packet instanceof ListChatGroupIdsPacket listChatGroupIdsPacket){
             var listener = this.handler.getListChatGroupsListener();
             if(listener != null)listener.onListChatGroups(listChatGroupIdsPacket.getChatGroups());
-            for (BasicChatGroup chatGroup : listChatGroupIdsPacket.getChatGroups()){
+            for (ChatGroup chatGroup : listChatGroupIdsPacket.getChatGroups()){
                 logger.info(chatGroup.getChatGroupId() +  ":" + chatGroup.getChatGroupName());
             }
         }

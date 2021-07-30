@@ -12,25 +12,31 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class ServerChatGroup extends BasicChatGroup {
+public class ServerChatGroup extends ChatGroup {
 
     private final Set<User> users;
     private final ChannelGroup channelGroup;
 
-    public ServerChatGroup(UUID chatGroupId, String chatGroupName) {
-        super(chatGroupId, chatGroupName);
+    private static final int SIZE_OF_CHAT_GROUP = 5;
+
+    public ServerChatGroup(UUID chatGroupId, String chatGroupName){
+        this(chatGroupId, chatGroupName, SIZE_OF_CHAT_GROUP);
+    }
+
+    public ServerChatGroup(UUID chatGroupId, String chatGroupName, int sizeOfChatGroup) {
+        super(chatGroupId, chatGroupName, sizeOfChatGroup);
         users = new HashSet<>();
         this.channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     }
 
     public void joinChatGroup(User user){
-        if(users.contains(user)) {
+        if(users.contains(user))
             throw new IllegalStateException("User is already part of this chat group");
-        }
+        else if(getNumberOfUsersInChatGroup() >= getSizeOfChatGroup())
+            throw new IllegalStateException("Max chat users reached");
         users.add(user);
         channelGroup.add(user.channel());
         user.groups().add(this);
-
     }
 
     public void leaveChatGroup(User user){
@@ -68,4 +74,9 @@ public class ServerChatGroup extends BasicChatGroup {
         return channelGroup.writeAndFlush(message);
     }
 
+
+    @Override
+    public int getNumberOfUsersInChatGroup() {
+        return users.size();
+    }
 }

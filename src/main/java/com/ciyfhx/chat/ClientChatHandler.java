@@ -7,7 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class ClientChatHandler implements IChat {
 
     private ChannelHandlerContext ctx;
-    private BasicChatGroup chatGroup;
+    private ChatGroup chatGroup;
 
     private IMessageReceived messageReceived;
     private IListChatGroups listChatGroups;
@@ -25,12 +25,12 @@ public class ClientChatHandler implements IChat {
     }
 
     @Override
-    public void setChatGroup(BasicChatGroup chatGroup) {
+    public void setChatGroup(ChatGroup chatGroup) {
         this.chatGroup = chatGroup;
     }
 
     @Override
-    public BasicChatGroup getChatGroup() {
+    public ChatGroup getChatGroup() {
         return this.chatGroup;
     }
 
@@ -58,14 +58,14 @@ public class ClientChatHandler implements IChat {
     }
 
     @Override
-    public ChannelFuture joinChatGroup(BasicChatGroup chatGroup) {
+    public ChannelFuture joinChatGroup(ChatGroup chatGroup) {
         var joinChatGroupPacket = new JoinChatGroupPacket();
         joinChatGroupPacket.setChatGroupIdToJoin(chatGroup.getChatGroupId());
         return ctx.writeAndFlush(joinChatGroupPacket);
     }
 
     @Override
-    public ChannelFuture leaveChatGroup(BasicChatGroup chatGroup) {
+    public ChannelFuture leaveChatGroup(ChatGroup chatGroup) {
         var leaveChatGroup = new LeaveChatGroupPacket();
         leaveChatGroup.setChatGroupIdToLeave(chatGroup.getChatGroupId());
         return ctx.writeAndFlush(leaveChatGroup);
