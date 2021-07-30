@@ -31,6 +31,7 @@ public class WowChatClient {
     private IChat chat;
 
     private EventLoopGroup workerGroup;
+    private boolean connected = false;
 
 
     public static void main(String[] args) throws Exception {
@@ -53,6 +54,8 @@ public class WowChatClient {
     }
 
     public ChannelFuture start(String host) throws Exception {
+        if(connected) throw new IllegalStateException("Already connected to server!");
+        connected = true;
         workerGroup = new NioEventLoopGroup();
 
         Bootstrap bootstrap = new Bootstrap();
@@ -83,8 +86,10 @@ public class WowChatClient {
     }
 
     public void stop() {
+        if(!connected) throw new IllegalStateException("Not connected to server!");
         workerGroup.shutdownGracefully();
         logger.info("Disconnected from server");
+        this.connected = false;
     }
 
     public void setClientConnected(ClientConnected clientConnected) {

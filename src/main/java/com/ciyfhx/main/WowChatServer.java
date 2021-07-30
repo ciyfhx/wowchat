@@ -20,6 +20,7 @@ public class WowChatServer {
     private ServerOutboundMessageProcessingHandler outboundHandler;
 
     private EventLoopGroup bossGroup, workerGroup;
+    private boolean connected = false;
 
     public static void main(String[] args) throws Exception {
         var server = new WowChatServer();
@@ -31,6 +32,8 @@ public class WowChatServer {
     }
 
     public ChannelFuture start() throws Exception{
+        if(connected) throw new IllegalStateException("Server is already running!");
+        connected = true;
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
 
@@ -56,8 +59,10 @@ public class WowChatServer {
     }
 
     public void stop(){
+        if(!connected) throw new IllegalStateException("Server is not running!");
         workerGroup.shutdownGracefully();
         bossGroup.shutdownGracefully();
+        connected = false;
     }
 
 
