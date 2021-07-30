@@ -4,6 +4,7 @@ import com.ciyfhx.chat.ServerChatGroup;
 import com.ciyfhx.chat.ChatManager;
 import com.ciyfhx.chat.User;
 import com.ciyfhx.chat.packets.*;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -18,17 +19,18 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
     private static Logger logger = LoggerFactory.getLogger(ServerInboundMessageProcessingHandler.class);
     private ChatManager chatManager;
 
-    public ServerInboundMessageProcessingHandler(){
+    public ServerInboundMessageProcessingHandler() {
         chatManager = new ChatManager();
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("New connection receive from " + ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().toString());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-
+        removeUserFromChannelIfExist(ctx.channel());
     }
 
     @Override
@@ -37,14 +39,14 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
         User user = chatManager.getUserFromChannel(ctx.channel());
         packet.setSender(user);
 
-        if(packet instanceof NewUserPacket userPacket){
+        if (packet instanceof NewUserPacket userPacket) {
             chatManager.createUser(userPacket.getUsername(), ctx.channel());
-            logger.info("New User from " + userPacket.getUsername() + "[" + ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().toString() +"]");
-        } else if(packet instanceof SendMessagePacket messagePacket){
+            logger.info("New User from " + userPacket.getUsername() + "[" + ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().toString() + "]");
+        } else if (packet instanceof SendMessagePacket messagePacket) {
             logger.info("[" + messagePacket.getSender().username() + "]: " + messagePacket.getMessage());
             ServerChatGroup serverChatGroup = chatManager.getChatGroupFromId(messagePacket.getChatGroupId());
             serverChatGroup.sendMessageInGroup(messagePacket.getSender(), messagePacket.getMessage());
-        }else if (packet instanceof NewChatGroupPacket chatGroupPacket) {
+        } else if (packet instanceof NewChatGroupPacket chatGroupPacket) {
             logger.info("New chat group: " + chatGroupPacket.getChatGroupName());
             var chatGroup = chatManager.createChatGroup(chatGroupPacket.getChatGroupName());
             chatGroup.joinChatGroup(user);
@@ -53,7 +55,7 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
             sendJoinedChatGroupPacket(ctx, user, chatGroup);
 
 
-        }else if(packet instanceof JoinChatGroupPacket joinChatGroupPacket){
+        } else if (packet instanceof JoinChatGroupPacket joinChatGroupPacket) {
             var chatGroup = chatManager.getChatGroupFromId(joinChatGroupPacket.getChatGroupIdToJoin());
             logger.info(user.username() + " joined chat group: " + chatGroup.getChatGroupName());
             chatGroup.joinChatGroup(user);
@@ -61,7 +63,7 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
             // Send Chat Group id
             sendJoinedChatGroupPacket(ctx, user, chatGroup);
 
-        }else if(packet instanceof GetChatGroupsIdsPacket) {
+        } else if (packet instanceof GetChatGroupsIdsPacket) {
             var listChatGroupsIdsPacket = new ListChatGroupIdsPacket();
             listChatGroupsIdsPacket.setChatGroups(chatManager.getAvailableChatGroups());
 
@@ -82,13 +84,20 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        removeUserFromChannelIfExist(ctx.channel());
+    }
+
+    private void removeUserFromChannelIfExist(Channel channel) {
         // Remove user if there is an exception
         try {
-            User user = chatManager.getUserFromChannel(ctx.channel());
-            logger.error("User removed " + user.username() + "[" + ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().toString() +"]");
-            chatManager.removeUser(user);
-        }finally {
-            ctx.close();
+            User user = chatManager.getUserFromChannel(channel);
+            if(user == null) logger.error("Connection removed without user");
+            else{
+                logger.error("User removed " + user.username() + "[" + ((InetSocketAddress) channel.remoteAddress()).getAddress().toString() + "]");
+                chatManager.removeUser(user);
+            }
+        } finally {
+            channel.close();
         }
     }
 }
