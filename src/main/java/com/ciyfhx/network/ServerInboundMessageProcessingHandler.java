@@ -57,13 +57,18 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
 
         } else if (packet instanceof JoinChatGroupPacket joinChatGroupPacket) {
             var chatGroup = chatManager.getChatGroupFromId(joinChatGroupPacket.getChatGroupIdToJoin());
-            logger.info(user.username() + " joined chat group: " + chatGroup.getChatGroupName());
             chatGroup.joinChatGroup(user);
 
             // Send Chat Group id
             sendJoinedChatGroupPacket(ctx, user, chatGroup);
+            logger.info(user.username() + " joined chat group: " + chatGroup.getChatGroupName());
 
-        } else if (packet instanceof GetChatGroupsIdsPacket) {
+        }else if (packet instanceof LeaveChatGroupPacket leaveChatGroupPacket){
+            var chatGroup = chatManager.getChatGroupFromId(leaveChatGroupPacket.getChatGroupIdToLeave());
+            chatGroup.leaveChatGroup(user);
+
+            logger.info(user.username() + " left chat group: " + chatGroup.getChatGroupName());
+        }else if (packet instanceof GetChatGroupsIdsPacket) {
             var listChatGroupsIdsPacket = new ListChatGroupIdsPacket();
             listChatGroupsIdsPacket.setChatGroups(chatManager.getAvailableChatGroups());
 
@@ -85,6 +90,7 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         removeUserFromChannelIfExist(ctx.channel());
+        logger.error(cause.getMessage());
     }
 
     private void removeUserFromChannelIfExist(Channel channel) {

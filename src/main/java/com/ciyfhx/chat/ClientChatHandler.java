@@ -58,11 +58,6 @@ public class ClientChatHandler implements IChat {
     }
 
     @Override
-    public void removeGroup(ServerChatGroup serverChatGroup) {
-
-    }
-
-    @Override
     public ChannelFuture joinChatGroup(BasicChatGroup chatGroup) {
         var joinChatGroupPacket = new JoinChatGroupPacket();
         joinChatGroupPacket.setChatGroupIdToJoin(chatGroup.getChatGroupId());
@@ -70,8 +65,10 @@ public class ClientChatHandler implements IChat {
     }
 
     @Override
-    public void leaveChatGroup(BasicChatGroup chatGroup) {
-
+    public ChannelFuture leaveChatGroup(BasicChatGroup chatGroup) {
+        var leaveChatGroup = new LeaveChatGroupPacket();
+        leaveChatGroup.setChatGroupIdToLeave(chatGroup.getChatGroupId());
+        return ctx.writeAndFlush(leaveChatGroup);
     }
 
     @Override

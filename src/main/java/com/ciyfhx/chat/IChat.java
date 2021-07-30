@@ -16,10 +16,9 @@ public interface IChat {
 
 
     ChannelFuture createGroup(String chatGroupName);
-    void removeGroup(ServerChatGroup serverChatGroup);
 
     ChannelFuture joinChatGroup(BasicChatGroup chatGroup);
-    void leaveChatGroup(BasicChatGroup chatGroup);
+    ChannelFuture leaveChatGroup(BasicChatGroup chatGroup);
 
     void sendMessage(String message);
 

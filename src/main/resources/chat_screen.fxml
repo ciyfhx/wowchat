@@ -30,4 +30,18 @@
          </rowConstraints>
       </GridPane>
    </bottom>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Actions">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#leaveChatGroup" text="Leave Chat Group" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <right>
+      <ListView fx:id="usersListView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </right>
 </BorderPane>

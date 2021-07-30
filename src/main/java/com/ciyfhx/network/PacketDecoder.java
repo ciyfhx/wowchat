@@ -20,10 +20,11 @@ public class PacketDecoder extends ReplayingDecoder<Packet> {
         registeredPackets.put(Packets.NEW_MESSAGE, NewMessagePacket.class);
         registeredPackets.put(Packets.NEW_SERVER_MESSAGE, NewServerMessagePacket.class);
         registeredPackets.put(Packets.NEW_CHAT_GROUP, NewChatGroupPacket.class);
+        registeredPackets.put(Packets.JOIN_CHAT_GROUP, JoinChatGroupPacket.class);
+        registeredPackets.put(Packets.LEAVE_CHAT_GROUP, LeaveChatGroupPacket.class);
         registeredPackets.put(Packets.JOINED_CHAT_GROUP, JoinedChatGroupPacket.class);
         registeredPackets.put(Packets.LIST_CHAT_GROUPS_ID, ListChatGroupIdsPacket.class);
         registeredPackets.put(Packets.GET_CHAT_GROUPS_ID, GetChatGroupsIdsPacket.class);
-        registeredPackets.put(Packets.JOIN_CHAT_GROUP, JoinChatGroupPacket.class);
     }
 
     @Override
