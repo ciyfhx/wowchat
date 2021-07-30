@@ -49,6 +49,11 @@ public class ListChatGroupsController implements Initializable, IListChatGroups 
         this.chat.listChatGroups();
     }
 
+    @FXML
+    private void refreshAction(ActionEvent event){
+        this.chat.listChatGroups();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.chat = this.connection.getClient().getChat();

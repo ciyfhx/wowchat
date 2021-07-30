@@ -15,9 +15,10 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="New">
+          <Menu mnemonicParsing="false" text="Actions">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#createChatGroupAction" text="New Chat Group" />
+                  <MenuItem mnemonicParsing="false" onAction="#refreshAction" text="Refresh" />
                </items></Menu>
         </menus>
       </MenuBar>
