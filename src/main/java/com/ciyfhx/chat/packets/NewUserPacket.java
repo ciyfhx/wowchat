@@ -1,12 +1,11 @@
 package com.ciyfhx.chat.packets;
 
 
-import com.ciyfhx.network.Packet;
-import com.ciyfhx.network.PacketId;
+import com.ciyfhx.chat.network.Packet;
+import com.ciyfhx.chat.network.PacketId;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class NewUserPacket extends Packet {

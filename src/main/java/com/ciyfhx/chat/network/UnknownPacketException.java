@@ -1,4 +1,4 @@
-package com.ciyfhx.network;
+package com.ciyfhx.chat.network;
 
 public class UnknownPacketException extends Exception {
 

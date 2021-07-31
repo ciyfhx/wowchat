@@ -1,4 +1,4 @@
-package com.ciyfhx.network;
+package com.ciyfhx.chat.network;
 
 import com.ciyfhx.chat.packets.*;
 import io.netty.buffer.ByteBuf;
@@ -25,6 +25,9 @@ public class PacketDecoder extends ReplayingDecoder<Packet> {
         registeredPackets.put(Packets.JOINED_CHAT_GROUP, JoinedChatGroupPacket.class);
         registeredPackets.put(Packets.LIST_CHAT_GROUPS_ID, ListChatGroupIdsPacket.class);
         registeredPackets.put(Packets.GET_CHAT_GROUPS_ID, GetChatGroupsIdsPacket.class);
+        registeredPackets.put(Packets.GET_USERS_IN_CHAT_GROUP, ListOfUsersInChatGroupPacket.class);
+        registeredPackets.put(Packets.USER_JOIN_CHAT_GROUP, UserJoinChatGroupPacket.class);
+        registeredPackets.put(Packets.USER_LEAVE_CHAT_GROUP, UserLeaveChatGroupPacket.class);
     }
 
     @Override

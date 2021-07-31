@@ -2,7 +2,7 @@ package com.ciyfhx.chat;
 
 import java.util.UUID;
 
-public class BasicChatGroup extends ChatGroup{
+public class BasicChatGroup extends ChatGroup {
 
     private int numberOfUsersInChatGroup = 0;
 

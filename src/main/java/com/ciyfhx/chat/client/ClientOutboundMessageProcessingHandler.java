@@ -1,4 +1,4 @@
-package com.ciyfhx.network;
+package com.ciyfhx.chat.client;
 
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

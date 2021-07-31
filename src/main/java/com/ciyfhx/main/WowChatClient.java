@@ -1,7 +1,9 @@
 package com.ciyfhx.main;
 
-import com.ciyfhx.chat.IChat;
-import com.ciyfhx.network.*;
+import com.ciyfhx.chat.client.ClientInboundMessageProcessingHandler;
+import com.ciyfhx.chat.client.ClientOutboundMessageProcessingHandler;
+import com.ciyfhx.chat.client.IChatLobby;
+import com.ciyfhx.chat.network.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -16,7 +18,7 @@ import java.util.Scanner;
 public class WowChatClient {
 
     public interface ClientConnected {
-        void connected(IChat chat) throws IOException;
+        void connected(IChatLobby chat) throws IOException;
     }
 
     private static Logger logger = LoggerFactory.getLogger(WowChatClient.class);
@@ -28,7 +30,7 @@ public class WowChatClient {
 
     private ClientInboundMessageProcessingHandler inboundHandler;
     private ClientOutboundMessageProcessingHandler outboundHandler;
-    private IChat chat;
+    private IChatLobby chatLobby;
 
     private EventLoopGroup workerGroup;
     private boolean connected = false;
@@ -42,7 +44,7 @@ public class WowChatClient {
         try{
             client.setClientConnected(chat -> {
                 chat.sendUserInfo(username);
-                chat.createGroup(chatGroupName);
+                chat.createChatGroup(chatGroupName);
             });
 
             client.start(HOST);
@@ -79,8 +81,8 @@ public class WowChatClient {
         ChannelFuture future = bootstrap.connect(host, PORT).sync();
         future.addListener((ChannelFutureListener) channelFuture -> {
             logger.info("Connected to server");
-            this.chat = inboundHandler.getChatHandler();
-            if(clientConnected!=null)clientConnected.connected(this.chat);
+            this.chatLobby = inboundHandler.getChatHandler();
+            if(clientConnected!=null)clientConnected.connected(this.chatLobby);
         });
         return future;
     }
@@ -96,8 +98,8 @@ public class WowChatClient {
         this.clientConnected = clientConnected;
     }
 
-    public IChat getChat() {
-        return chat;
+    public IChatLobby getChatLobby() {
+        return chatLobby;
     }
 
     public static void listenForInput(WowChatClient client) {
@@ -107,7 +109,7 @@ public class WowChatClient {
             if (scanner.hasNext()) {
                 String messageToSend = scanner.nextLine();
                 if (messageToSend.equals("exit")) break;
-                client.chat.sendMessage(messageToSend);
+//                client.chatLobby.sendMessage(messageToSend);
             }
         }
     }

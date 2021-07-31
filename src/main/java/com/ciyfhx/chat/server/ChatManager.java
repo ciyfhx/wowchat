@@ -1,9 +1,12 @@
-package com.ciyfhx.chat;
+package com.ciyfhx.chat.server;
 
+import com.ciyfhx.chat.ChatGroup;
+import com.ciyfhx.chat.ChatGroupNotFoundException;
+import com.ciyfhx.chat.User;
+import com.ciyfhx.chat.UserNotFoundException;
 import io.netty.channel.Channel;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -11,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ChatManager {
 
     private ConcurrentMap<UUID, ServerChatGroup> chatGroups;
-    private ConcurrentMap<Channel, User> userChannels;
+    private ConcurrentMap<Channel, ServerUser> userChannels;
 
     public ChatManager(){
         chatGroups = new ConcurrentHashMap<>();
@@ -31,25 +34,25 @@ public class ChatManager {
     }
 
     public User createUser(String username, Channel channel){
-        var user = new User(username, channel, new HashSet<>());
+        var user = new ServerUser(username, channel);
         userChannels.put(channel, user);
         return user;
     }
 
-    public void removeUser(User user){
-        for(ServerChatGroup serverChatGroup : user.groups()){
+    public void removeUser(ServerUser user){
+        for(ServerChatGroup serverChatGroup : user.getChatGroups()){
             serverChatGroup.leaveChatGroup(user);
         }
         userChannels.remove(user.channel());
     }
 
     public void removeUserFromChannel(Channel channel) throws UserNotFoundException {
-        User user = this.getUserFromChannel(channel);
+        ServerUser user = this.getUserFromChannel(channel);
         if(user == null) throw new UserNotFoundException("User cannot be found!");
         this.removeUser(user);
     }
 
-    public User getUserFromChannel(Channel channel){
+    public ServerUser getUserFromChannel(Channel channel){
         return userChannels.get(channel);
     }
 

@@ -1,6 +1,6 @@
 package com.ciyfhx.gui.client;
 
-import com.ciyfhx.chat.IChat;
+import com.ciyfhx.chat.client.IChatLobby;
 import com.ciyfhx.gui.FXMLUtils;
 import com.ciyfhx.main.WowChatClient;
 import com.google.inject.Inject;
@@ -19,7 +19,7 @@ public class LoginScreenController implements Initializable {
 
     @Inject
     private WowChatClientConnection connection;
-    private IChat chat;
+    private IChatLobby chat;
 
     @FXML
     private TextField usernameTextField;

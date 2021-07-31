@@ -1,9 +1,9 @@
 package com.ciyfhx.main;
 
-import com.ciyfhx.network.PacketDecoder;
-import com.ciyfhx.network.PacketEncoder;
-import com.ciyfhx.network.ServerInboundMessageProcessingHandler;
-import com.ciyfhx.network.ServerOutboundMessageProcessingHandler;
+import com.ciyfhx.chat.network.PacketDecoder;
+import com.ciyfhx.chat.network.PacketEncoder;
+import com.ciyfhx.chat.server.ServerInboundMessageProcessingHandler;
+import com.ciyfhx.chat.server.ServerOutboundMessageProcessingHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

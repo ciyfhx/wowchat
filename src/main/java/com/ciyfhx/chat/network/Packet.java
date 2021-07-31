@@ -1,4 +1,4 @@
-package com.ciyfhx.network;
+package com.ciyfhx.chat.network;
 
 import com.ciyfhx.chat.User;
 import io.netty.buffer.ByteBuf;
@@ -9,7 +9,6 @@ import java.util.List;
 public abstract class Packet {
 
     private PacketId packetId;
-    private User sender;
 
     public Packet(PacketId packetId) {
         this.packetId = packetId;
@@ -17,14 +16,6 @@ public abstract class Packet {
 
     public PacketId getPacketId() {
         return packetId;
-    }
-
-    public User getSender() {
-        return sender;
-    }
-
-    protected void setSender(User sender) {
-        this.sender = sender;
     }
 
     public abstract void encode(ChannelHandlerContext ctx, ByteBuf out) throws Exception;

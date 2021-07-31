@@ -1,4 +1,4 @@
-package com.ciyfhx.chat;
+package com.ciyfhx.chat.client;
 
 import com.ciyfhx.chat.packets.NewMessagePacket;
 import com.ciyfhx.chat.packets.NewServerMessagePacket;

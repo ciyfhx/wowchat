@@ -1,4 +1,4 @@
-package com.ciyfhx.network;
+package com.ciyfhx.chat.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

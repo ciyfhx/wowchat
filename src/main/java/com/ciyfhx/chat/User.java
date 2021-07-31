@@ -1,18 +1,32 @@
 package com.ciyfhx.chat;
 
-import io.netty.channel.Channel;
-
 import java.util.Objects;
-import java.util.Set;
 
-public record User(
-        String username,
-        Channel channel,
-        Set<ServerChatGroup> groups
-) {
+public class User{
+
+    private String username;
+
+    public User(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String toString() {
+        return username;
+    }
 
     @Override
     public int hashCode() {
         return Objects.hash(username);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof User user) return hashCode() == user.hashCode();
+        return false;
     }
 }

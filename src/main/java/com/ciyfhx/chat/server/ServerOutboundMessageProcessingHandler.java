@@ -1,4 +1,4 @@
-package com.ciyfhx.network;
+package com.ciyfhx.chat.server;
 
 import io.netty.channel.*;
 

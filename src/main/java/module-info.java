@@ -16,4 +16,7 @@ module com.ciyfhx.wowchat {
     opens com.ciyfhx.chat;
     opens com.ciyfhx.gui.client;
     opens com.ciyfhx.gui.server;
+    opens com.ciyfhx.chat.server;
+    opens com.ciyfhx.chat.client;
+    opens com.ciyfhx.chat.network;
 }

@@ -1,13 +1,15 @@
 package com.ciyfhx.gui.client;
 
-import com.ciyfhx.chat.IChat;
-import com.ciyfhx.chat.IMessageReceived;
+import com.ciyfhx.chat.*;
 import com.ciyfhx.chat.User;
+import com.ciyfhx.chat.client.*;
 import com.ciyfhx.chat.packets.NewMessagePacket;
 import com.ciyfhx.chat.packets.NewServerMessagePacket;
 import com.ciyfhx.gui.FXMLUtils;
 import com.google.inject.Inject;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,15 +21,19 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public class ChatScreenController implements Initializable, IMessageReceived {
+public class ChatScreenController implements Initializable, Closeable, IMessageReceived, IListUsersInChatGroup {
 
     @Inject
     private WowChatClientConnection connection;
-    private IChat chat;
+    private IChatLobby lobby;
+    private ClientChatGroup chat;
 
     @FXML
     private ListView<User> usersListView;
+    private ObservableList<User> users;
     @FXML
     private TextArea messagesTextArea;
     @FXML
@@ -41,17 +47,30 @@ public class ChatScreenController implements Initializable, IMessageReceived {
 
     @FXML
     public void leaveChatGroup(ActionEvent event){
-        this.chat.leaveChatGroup(chat.getChatGroup());
+        this.lobby.leaveChatGroup(chat);
         showChatGroupsScreen();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         messageTextField.requestFocus();
-        this.chat = connection.getClient().getChat();
-        this.chat.setMessageReceivedListener(this);
+        this.lobby = connection.getClient().getChatLobby();
+        this.chat = connection.getCurrentChatGroup();
+        this.chat.addListUsersInChatGroupListener(this);
+        this.chat.addMessageReceivedListener(this);
 
-        messagesTextArea.appendText("You have joined " + chat.getChatGroup().getChatGroupName() + "\n");
+        this.users = FXCollections.observableArrayList(
+                this.chat.getUsers().stream().toList()
+        );
+        this.usersListView.setItems(this.users);
+
+        messagesTextArea.appendText("You have joined " + chat.getChatGroupName() + "\n");
+    }
+
+    @Override
+    public void close() {
+        this.chat.removeListUsersInChatGroupListener(this);
+        this.chat.removeMessageReceivedListener(this);
     }
 
     @Override
@@ -62,6 +81,24 @@ public class ChatScreenController implements Initializable, IMessageReceived {
     @Override
     public void onServerMessageReceived(NewServerMessagePacket message) {
         messagesTextArea.appendText(message.getMessage() + "\n");
+    }
+
+    @Override
+    public void onListUsers(Set<User> users) {
+        this.users = FXCollections.observableArrayList(
+                users.stream().toList()
+        );
+        this.usersListView.setItems(this.users);
+    }
+
+    @Override
+    public void onUserJoined(User userJoined) {
+        Platform.runLater(() -> this.users.add(userJoined));
+    }
+
+    @Override
+    public void onUserLeave(User userLeave) {
+        Platform.runLater(() -> this.users.remove(userLeave));
     }
 
     private void showChatGroupsScreen(){
