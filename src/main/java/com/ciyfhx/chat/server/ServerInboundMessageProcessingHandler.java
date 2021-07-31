@@ -76,16 +76,10 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
 
             logger.info("New chat group: " + chatGroupPacket.getChatGroupName());
 
-//            // Send Chat Group id
-//            sendJoinedChatGroupPacket(ctx, user, chatGroup);
-
-
         } else if (packet instanceof JoinChatGroupPacket joinChatGroupPacket) {
             var chatGroup = chatManager.getChatGroupFromId(joinChatGroupPacket.getChatGroupIdToJoin());
             chatGroup.joinChatGroup(sender);
 
-//            // Send Chat Group id
-//            sendJoinedChatGroupPacket(ctx, user, chatGroup);
             logger.info(sender.getUsername() + " joined chat group: " + chatGroup.getChatGroupName());
 
         }else if (packet instanceof LeaveChatGroupPacket leaveChatGroupPacket){
@@ -100,21 +94,6 @@ public class ServerInboundMessageProcessingHandler extends ChannelInboundHandler
             ctx.writeAndFlush(listChatGroupsIdsPacket);
         }
     }
-
-//    private void sendJoinedChatGroupPacket(ChannelHandlerContext ctx, User user, ServerChatGroup chatGroup) {
-//        var joinedChatGroupPacket = new JoinedChatGroupPacket();
-//        joinedChatGroupPacket.setChatGroup(chatGroup);
-//        var future = ctx.writeAndFlush(joinedChatGroupPacket);
-//
-//        future.addListener(_future -> {
-//            chatGroup.sendServerMessage(user.getUsername() + " has joined the group");
-//
-//            //Send users inside chat group
-//            var listOfUserInGroupChat = new ListOfUsersInChatGroupPacket();
-//            listOfUserInGroupChat.setUsers(chatGroup.getUsers());
-//            ctx.writeAndFlush(listOfUserInGroupChat);
-//        });
-//    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
