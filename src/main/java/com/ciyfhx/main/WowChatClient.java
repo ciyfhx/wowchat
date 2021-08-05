@@ -4,6 +4,7 @@ import com.ciyfhx.chat.client.ClientInboundMessageProcessingHandler;
 import com.ciyfhx.chat.client.ClientOutboundMessageProcessingHandler;
 import com.ciyfhx.chat.client.IChatLobby;
 import com.ciyfhx.chat.network.*;
+import com.ciyfhx.chat.security.ClientSecurityProvider;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -36,7 +37,7 @@ public class WowChatClient {
     private boolean connected = false;
 
 
-    public static void main(String[] args) throws Exception {
+   public static void main(String[] args) throws Exception {
         String username = askForUsername();
         String chatGroupName = askForChatGroupName();
         var client = new WowChatClient();
@@ -56,6 +57,7 @@ public class WowChatClient {
     }
 
     public ChannelFuture start(String host) throws Exception {
+        System.setProperty("jdk.tls.server.protocols", "TLSv1.2");
         if(connected) throw new IllegalStateException("Already connected to server!");
         connected = true;
         workerGroup = new NioEventLoopGroup();
@@ -64,12 +66,15 @@ public class WowChatClient {
         bootstrap.group(workerGroup);
         bootstrap.channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+
+        ClientSecurityProvider.initSSLContext();
         this.inboundHandler = new ClientInboundMessageProcessingHandler();
         this.outboundHandler = new ClientOutboundMessageProcessingHandler();
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel socketChannel) throws Exception {
                 socketChannel.pipeline().addLast(
+                        ClientSecurityProvider.getSSLHandler(),
                         new PacketEncoder(),
                         outboundHandler,
                         new PacketDecoder(),

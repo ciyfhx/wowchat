@@ -2,6 +2,7 @@ package com.ciyfhx.main;
 
 import com.ciyfhx.chat.network.PacketDecoder;
 import com.ciyfhx.chat.network.PacketEncoder;
+import com.ciyfhx.chat.security.ServerSecurityProvider;
 import com.ciyfhx.chat.server.ServerInboundMessageProcessingHandler;
 import com.ciyfhx.chat.server.ServerOutboundMessageProcessingHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -32,11 +33,13 @@ public class WowChatServer {
     }
 
     public ChannelFuture start() throws Exception{
+        System.setProperty("jdk.tls.server.protocols", "TLSv1.2");
         if(connected) throw new IllegalStateException("Server is already running!");
         connected = true;
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
 
+        ServerSecurityProvider.initSSLContext();
         var serverBootstrap = new ServerBootstrap();
         this.inboundHandler = new ServerInboundMessageProcessingHandler();
         this.outboundHandler = new ServerOutboundMessageProcessingHandler();
@@ -46,6 +49,7 @@ public class WowChatServer {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline().addLast(
+                                ServerSecurityProvider.getSSLHandler(),
                                 new PacketEncoder(),
                                 outboundHandler,
                                 new PacketDecoder(),
