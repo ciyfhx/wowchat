@@ -14,4 +14,6 @@ This repository contains a sample self-signed certificate located under `src/res
 | wowchat-server.jks      | JKS Keystore (Server's certificate, private & public keys)|
 | wowchat-server.cer      | Server certificate     |
 
-_**Please note that this application only support TLS 1.2**_
+By default, server will only accept TLS 1.3 connections.
+
+Allowed Cipher Suites: `TLS_AES_256_GCM_SHA384, TLS_CHACHA20_POLY1305_SHA256`
