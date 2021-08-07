@@ -53,7 +53,6 @@
                     <nativeImageArgs>-H:+AllowIncompleteClasspath</nativeImageArgs>
                     <target>android</target>
                     <mainClass>com.ciyfhx.gui.client.MainClientGUI</mainClass>
-                    <graalvmHome>C:\Users\pehzi\Downloads\graalvm-ce-java11-21.2.0</graalvmHome>
                 </configuration>
             </plugin>
             <plugin>
