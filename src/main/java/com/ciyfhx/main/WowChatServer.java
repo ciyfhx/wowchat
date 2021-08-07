@@ -33,7 +33,7 @@ public class WowChatServer {
     }
 
     public ChannelFuture start() throws Exception{
-        System.setProperty("jdk.tls.server.protocols", "TLSv1.2");
+        System.setProperty("jdk.tls.server.protocols", "TLSv1.3");
         if(connected) throw new IllegalStateException("Server is already running!");
         connected = true;
         this.bossGroup = new NioEventLoopGroup();

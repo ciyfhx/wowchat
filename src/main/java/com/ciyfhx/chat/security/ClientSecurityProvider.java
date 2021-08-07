@@ -4,9 +4,10 @@ import io.netty.handler.ssl.SslHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
-import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -18,7 +19,7 @@ public class ClientSecurityProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientSecurityProvider.class);
 
-    private static final String PROTOCOL = "TLS";
+    private static final String PROTOCOL = "TLSv1.3";
     private static final String CERT_LOCATION = "wowchat-server.cer";
 
     private static SSLContext sslContext;

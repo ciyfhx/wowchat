@@ -15,7 +15,7 @@ public class ServerSecurityProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerSecurityProvider.class);
 
-    private static final String PROTOCOL = "TLS";
+    private static final String PROTOCOL = "TLSv1.3";
     private static final String KEYSTORE_LOCATION = "wowchat-server.jks";
     private static final String KEYSTORE_PASSWORD = "wowchat";
     private static final String KEYSTORE_TYPE = "JKS";
@@ -32,6 +32,8 @@ public class ServerSecurityProvider {
             sslEngine = serverSSLContext.createSSLEngine();
             sslEngine.setUseClientMode(false);
             sslEngine.setNeedClientAuth(false);
+            sslEngine.setEnabledProtocols(new String[]{PROTOCOL});
+            sslEngine.setEnabledCipherSuites(new String[]{"TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256"});
             logger.info("Enabled Cipher Suites: " + String.join(",", sslEngine.getEnabledCipherSuites()));
             logger.info("Supported Cipher Suites: " + String.join(",", sslEngine.getSupportedCipherSuites()));
         }

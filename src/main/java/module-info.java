@@ -8,7 +8,7 @@ module com.ciyfhx.wowchat {
 
     requires com.google.guice;
 
-    requires netty.all;
+    requires io.netty.all;
     requires org.slf4j;
     requires logback.core;
     requires logback.classic;

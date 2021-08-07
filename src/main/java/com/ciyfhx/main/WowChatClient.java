@@ -57,7 +57,7 @@ public class WowChatClient {
     }
 
     public ChannelFuture start(String host) throws Exception {
-        System.setProperty("jdk.tls.server.protocols", "TLSv1.2");
+        System.setProperty("jdk.tls.server.protocols", "TLSv1.3");
         if(connected) throw new IllegalStateException("Already connected to server!");
         connected = true;
         workerGroup = new NioEventLoopGroup();

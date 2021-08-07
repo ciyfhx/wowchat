@@ -18,7 +18,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.10.Final</version>
+            <version>4.1.66.Final</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -36,11 +36,6 @@
             <version>17-ea+11</version>
         </dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.5</version>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
