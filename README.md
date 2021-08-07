@@ -1,8 +1,8 @@
-#Simple Chatting Application
+# Simple Chatting Application
 
 Simple Chatting Application using Netty
 
-##TLS Connection
+## TLS Connection
 For creating a secure communication channel between the server and client, you will need to generate a self-signed certificate or a valid certificate signed by
 a trustworthy certificate authority.
 
